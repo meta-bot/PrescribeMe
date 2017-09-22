@@ -5,11 +5,13 @@
  */
 package Backend;
 
+import java.io.Serializable;
+
 /**
  *
  * @author tishpish
  */
-public class Test
+public class Test implements Serializable
 {
     private String name,type;
     public Test(String name, String type)

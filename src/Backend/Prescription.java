@@ -5,26 +5,46 @@
  */
 package Backend;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author tishpish
  */
-public class Prescription
+public class Prescription implements Serializable
 {
-    private String time, date;
+    private static Prescription prescription;
+    private String time, date, doctorId;
     private ArrayList<Test> allTest;
     private ArrayList<Medicine> allMedicine;
 
-    public Prescription(String time, String date)
+    private Prescription(String doctorID,String time, String date)
     {
+        this.doctorId = doctorID;
         this.time = time;
         this.date= date;
         allTest = new ArrayList<Test>();
         allMedicine = new ArrayList<Medicine>();
     }
-
+    
+    public static Prescription getEmptyPrescription(String doctorID,String time, String date)
+    {
+        if (prescription== null)
+            prescription = new Prescription(doctorID, time, date);
+        return prescription;
+    }
+    
+    public String getDoctorId()
+    {
+        return doctorId;
+    }
+    
+    public void setDoctorId(String doctorId)
+    {
+        this.doctorId = doctorId;
+    }
+ 
     public String getDate()
     {
         return date;
@@ -58,6 +78,7 @@ public class Prescription
     {
         String data = "";
         data+="{";
+        data+="\"doctorId\":\""+getDoctorId()+"\",\n";
         data+="\"time\":\""+getTime()+"\",\n";
         data+="\"date\":\""+getDate()+"\",\n";
         data+="\"tests\":"+"[\n";
@@ -80,8 +101,6 @@ public class Prescription
                 data+=",\n";
             }
         }
-        
-        
         data+="]\n";
         data+="}\n";
         //return data;

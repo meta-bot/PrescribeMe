@@ -5,11 +5,13 @@
  */
 package Backend;
 
+import java.io.Serializable;
+
 /**
  *
  * @author tishpish
  */
-public class Medicine extends Test
+public class Medicine extends Test implements Serializable
 {
     private String
             timing, // 1+0+1
