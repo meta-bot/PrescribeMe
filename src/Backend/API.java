@@ -14,10 +14,12 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -31,7 +33,6 @@ public class API
     private static API singletonAPI;
     private static final String USER_AGENT = "Mozilla/5.0";
     private static final String POST_URL = "http://csedu.cf/toplines/querymaker.php";
-    private static final String POST_PARAMS = "query=SAVE_DATA";
     private API()
     {
     }
@@ -85,6 +86,7 @@ public class API
         // seding post request to remote server
         System.out.println(data);
         
+        
         URL obj;
         try
         {
@@ -92,7 +94,7 @@ public class API
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("User-Agent", USER_AGENT);
-
+            String POST_PARAMS = "query=SAVE_DATA";
             
             con.setDoOutput(true);
             OutputStream os = con.getOutputStream();
@@ -119,9 +121,6 @@ public class API
             return false;
         } 
         
-        
-        
-        
     }
     
     
@@ -147,6 +146,50 @@ public class API
         if (!path.endsWith("/"))
             path+="/";
         return loadPrescription(path+fileName);
+    }
+    
+    public boolean doctorLogin(String email, String password)
+    {
+        //Build parameter string
+        String data = "email="+email+"&pass="+password;
+        try 
+        {
+            
+            // Send the request
+            URL url = new URL(POST_URL);
+            URLConnection conn = url.openConnection();
+            conn.setDoOutput(true);
+            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+            
+            //write parameters
+            writer.write(data);
+            writer.flush();
+            
+            // Get the response
+            StringBuffer answer = new StringBuffer();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                answer.append(line);
+            }
+            writer.close();
+            reader.close();
+            
+            //Output the response
+            System.out.println(answer.toString());
+            return true;
+        }
+        catch (MalformedURLException ex) 
+        {
+            ex.printStackTrace();
+            return false;
+        } 
+        catch (IOException ex) 
+        {
+            ex.printStackTrace();
+            return false;
+        }
+        
     }
     
 }

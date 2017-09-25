@@ -59,9 +59,10 @@ public class PrescribeMe {
             System.out.println(tp.getDoctorId());
             if (api.syncPrescription(pres))
             {
-                System.out.println("End");
+                System.out.println("Success");
             }
         }
+        
     }
     
 }
