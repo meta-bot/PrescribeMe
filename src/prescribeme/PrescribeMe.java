@@ -26,7 +26,7 @@ public class PrescribeMe {
         String testType[]={"Blood","Eye","Sugar"};
         
         String medName[]={"Histasin","Alatrol","Algin"};
-        String medType[]={"Tab.","Cap.","Liq"};
+        String medType[]={"Tab.","Cap.","Liq."};
         
         Prescription pres = Prescription.getEmptyPrescription("Doctor101","24-9-17", "18_52");
         
@@ -55,7 +55,13 @@ public class PrescribeMe {
         
         Prescription tp = api.loadPrescription(pathToSave+"/tiash.ta");
         if (tp!=null)
+        {
             System.out.println(tp.getDoctorId());
+            if (api.syncPrescription(pres))
+            {
+                System.out.println("End");
+            }
+        }
     }
     
 }
