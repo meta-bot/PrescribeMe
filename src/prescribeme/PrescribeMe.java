@@ -8,6 +8,7 @@ package prescribeme;
 import Backend.*;
 import Backend.Prescription;
 import Backend.Test;
+import Frontend.MainPanel;
 
 /**
  *
@@ -21,6 +22,7 @@ public class PrescribeMe {
     public static void main(String[] args) 
     {
         // TODO code application logic here
+        new MainPanel().doTask(args);
         
         String testName[]={"Blood test","Eye test","Sugar test"};
         String testType[]={"Blood","Eye","Sugar"};
