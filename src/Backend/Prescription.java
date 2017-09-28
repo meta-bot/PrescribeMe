@@ -38,6 +38,15 @@ public class Prescription implements Serializable
         return prescription;
     }
     
+    public int totalMedicine()
+    {
+        return allMedicine.size();
+    }
+    public int totalTest()
+    {
+        return allTest.size();
+    }
+    
     public String getDoctorId()
     {
         return doctorId;
@@ -75,6 +84,14 @@ public class Prescription implements Serializable
     public void addMedicine(Medicine med)
     {
         allMedicine.add(med);
+    }
+    public Medicine getMedicine(int pos)
+    {
+        return allMedicine.get(pos);
+    }
+    public Test getTest(int pos)
+    {
+        return allTest.get(pos);
     }
     
     public String convertToJson()
