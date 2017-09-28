@@ -44,6 +44,11 @@ public class API
         return singletonAPI;
     }
     
+    public Prescription getEmptyPrescription(String doctorID,String time, String date, String patientName,String patientAge,String patientSex)
+    {
+        return Prescription.getEmptyPrescription(doctorID, time, date, patientName, patientAge, patientSex);
+    }
+    
     public boolean savePrescription(String path,String filename, Prescription prescription)
     {
         if (!filename.endsWith(".ta"))
