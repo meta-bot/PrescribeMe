@@ -300,7 +300,9 @@ public class MainPanel extends Application {
             public void handle(ActionEvent t) {
                 //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
                 ObservableList<Node> testList = tests.getChildren();
-                Prescription mPres = Prescription.getEmptyPrescription(nameOfDoc.getText(), new SimpleDateFormat("HH:mm:ss").format(new Date()) ,new SimpleDateFormat("yyyy.MM:dd").format(new Date()));
+                String psex = sex.getSelectedToggle()==male?"male":"female";
+                System.out.println(psex);
+                Prescription mPres = Prescription.getEmptyPrescription(nameOfDoc.getText(), new SimpleDateFormat("HH:mm:ss").format(new Date()) ,new SimpleDateFormat("yyyy.MM:dd").format(new Date()),pname.getText(),page.getText(),psex);
                         
                 for(int i=0; i<testList.size();i++){
                     if(testList.get(i) instanceof TextField){
@@ -359,14 +361,14 @@ public class MainPanel extends Application {
                 Prescription get = API.getInstance().loadPrescription(f.getAbsolutePath());
                 stage.hide();
                 try {
-                    showPres(ret);
+                    showPres(ret,get);
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(MainPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
     }
-    void showPres(ArrayList<String> ret) throws FileNotFoundException{
+    void showPres(ArrayList<String> ret , Prescription prescription) throws FileNotFoundException{
         Stage stage = new Stage();
         BorderPane borderPane = new BorderPane();
         //AnchorPane anchor = new AnchorPane(borderPane);

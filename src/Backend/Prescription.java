@@ -15,24 +15,36 @@ import java.util.ArrayList;
 public class Prescription implements Serializable
 {
     private static Prescription prescription;
-    private String time, date, doctorId;
+    private String time, date, doctorId,patientName,patientAge,patientSex;
     private ArrayList<Test> allTest;
     private ArrayList<Medicine> allMedicine;
 
-    private Prescription(String doctorID,String time, String date)
+    private Prescription(String doctorID,String time, String date,String patientName,String patientAge,String patientSex)
     {
         this.doctorId = doctorID;
         this.time = time;
         this.date= date;
+        this.patientName = patientName;
+        this.patientAge = patientAge;
+        this.patientSex = patientSex;
         allTest = new ArrayList<Test>();
         allMedicine = new ArrayList<Medicine>();
     }
     
-    public static Prescription getEmptyPrescription(String doctorID,String time, String date)
+    public static Prescription getEmptyPrescription(String doctorID,String time, String date, String patientName,String patientAge,String patientSex)
     {
         if (prescription== null)
-            prescription = new Prescription(doctorID, time, date);
+            prescription = new Prescription(doctorID, time, date,patientName,patientAge,patientSex);
         return prescription;
+    }
+    
+    public int totalMedicine()
+    {
+        return allMedicine.size();
+    }
+    public int totalTest()
+    {
+        return allTest.size();
     }
     
     public String getDoctorId()
@@ -72,6 +84,14 @@ public class Prescription implements Serializable
     public void addMedicine(Medicine med)
     {
         allMedicine.add(med);
+    }
+    public Medicine getMedicine(int pos)
+    {
+        return allMedicine.get(pos);
+    }
+    public Test getTest(int pos)
+    {
+        return allTest.get(pos);
     }
     
     public String convertToJson()

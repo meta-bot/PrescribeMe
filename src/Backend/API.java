@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -30,11 +31,24 @@ import javax.swing.JLabel;
  */
 public class API
 {
+    Suggestion suggestion;
     private static API singletonAPI;
     private static final String USER_AGENT = "Mozilla/5.0";
     private static final String POST_URL = "http://csedu.cf/toplines/querymaker.php";
     private API()
     {
+        suggestion = loadSuggestionFile("suggestion.sl");
+        if (suggestion == null)
+        {
+            suggestion = new Suggestion();
+            if (saveSuggestionFile("suggestion.sl"))
+                System.out.println("Created new suggestion list");
+            else
+            {
+                System.out.println("Error creating new suggestion");
+            }
+        }
+        
     }
     
     public static API getInstance()
@@ -44,10 +58,24 @@ public class API
         return singletonAPI;
     }
     
+    /***********************************************************************************  
+    
+    Prescription Part
+    
+    **************************************************************************************/
+    public Prescription getEmptyPrescription(String doctorID,String time, String date, 
+            String patientName,String patientAge,String patientSex)
+    {
+        return Prescription.getEmptyPrescription(doctorID, time, date, patientName, patientAge, patientSex);
+    }
+    
     public boolean savePrescription(String path,String filename, Prescription prescription)
     {
         if (!filename.endsWith(".ta"))
             filename+=".ta";
+        
+        //saving suggestions
+        addUnTrackedMedicinesAndTestsToSuggestionList(prescription);
         
         FileOutputStream fileOutputStream;  
         try
@@ -71,8 +99,8 @@ public class API
             Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
-        
     }
+    
     
     public boolean savePrescription(String path, Prescription prescription)
     {
@@ -85,7 +113,6 @@ public class API
         String data = prescription.convertToJson();
         // seding post request to remote server
         System.out.println(data);
-        
         
         URL obj;
         try
@@ -148,6 +175,14 @@ public class API
         return loadPrescription(path+fileName);
     }
     
+    
+    
+    /***********************************************************************************  
+    
+    Doctor login Part
+    
+    **************************************************************************************/
+    
     public boolean doctorLogin(String email, String password)
     {
         //Build parameter string
@@ -189,7 +224,93 @@ public class API
             ex.printStackTrace();
             return false;
         }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
         
     }
+    
+    
+    /***********************************************************************************  
+    
+    Medicine Suggestion Part
+    
+    **************************************************************************************/
+    
+    public ArrayList<String> getMedicineSuggestion(String prefix)
+    {
+        
+        return suggestion.getMedSuggestion(prefix);
+    }
+    
+    public ArrayList<String> getTestSuggestion(String prefix)
+    {
+        
+        return suggestion.getTestSuggestion(prefix);
+    }
+    
+    
+    private boolean saveSuggestionFile(String filename)
+    {
+        
+        FileOutputStream fileOutputStream;  
+        try
+        {
+            fileOutputStream = new FileOutputStream(filename);
+            try
+            {
+                ObjectOutputStream writer = new ObjectOutputStream(fileOutputStream);
+                writer.writeObject(suggestion);  
+                writer.flush();
+                return true;
+            } 
+            catch (IOException ex)
+            {
+                Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
+        }
+        catch (FileNotFoundException ex)
+        {
+            Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+    
+    private Suggestion loadSuggestionFile(String fileName)
+    {
+        ObjectInputStream in=null;
+        try
+        {
+            in = new ObjectInputStream(new FileInputStream(fileName));  
+            Suggestion s=(Suggestion)in.readObject();
+            in.close();
+            return s;
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        return null;
+    }
+    
+    private void addUnTrackedMedicinesAndTestsToSuggestionList(Prescription prescription)
+    {
+        for (int i=0;i<prescription.totalMedicine();i++)
+        {
+            suggestion.tryToAddMedicine(prescription.getMedicine(i));
+        }
+        for (int i=0;i<prescription.totalTest();i++)
+        {
+            suggestion.tryToAddTest(prescription.getTest(i));
+        }
+        if (saveSuggestionFile("suggestion.sl"))
+            System.out.println("Suggestion file updated");
+        else
+            System.out.println("Suggestion updatation failed");
+    }
+    
     
 }

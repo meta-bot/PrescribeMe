@@ -30,7 +30,7 @@ public class PrescribeMe {
         String medName[]={"Histasin","Alatrol","Algin"};
         String medType[]={"Tab.","Cap.","Liq."};
         
-        Prescription pres = Prescription.getEmptyPrescription("Doctor101","24-9-17", "18_52");
+        Prescription pres = Prescription.getEmptyPrescription("Doctor101","24-9-17", "18_52","patientname","patientage","patientsex");
         
         for (int i=0;i<3;i++)
         {
@@ -55,15 +55,7 @@ public class PrescribeMe {
         else
             System.out.println("not saved");
         
-        Prescription tp = api.loadPrescription(pathToSave+"/tiash.ta");
-        if (tp!=null)
-        {
-            System.out.println(tp.getDoctorId());
-            if (api.syncPrescription(pres))
-            {
-                System.out.println("Success");
-            }
-        }
+        
         
     }
     
