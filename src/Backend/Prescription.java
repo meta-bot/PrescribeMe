@@ -37,6 +37,27 @@ public class Prescription implements Serializable
             prescription = new Prescription(doctorID, time, date,patientName,patientAge,patientSex);
         return prescription;
     }
+
+    public ArrayList<Medicine> getAllMedicine() {
+        return allMedicine;
+    }
+
+    public ArrayList<Test> getAllTest() {
+        return allTest;
+    }
+
+    
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public String getPatientAge() {
+        return patientAge;
+    }
+
+    public String getPatientSex() {
+        return patientSex;
+    }
     
     public int totalMedicine()
     {

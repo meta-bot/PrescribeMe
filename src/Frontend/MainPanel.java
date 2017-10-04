@@ -391,10 +391,10 @@ public class MainPanel extends Application {
         logoPane.setPadding(new Insets(10, 10, 10, 10));
         
         Text pnamelabel = new Text("Name: "); pnamelabel.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 14));
-        TextField pname = new TextField(); pname.setPromptText("user");
+        TextField pname = new TextField(); pname.setText(prescription.getPatientName()); pname.setEditable(false);
         
         Text pagelabel = new Text("Age: "); pagelabel.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 14));
-        TextField page = new TextField(); page.setPromptText("21");
+        TextField page = new TextField(); page.setText(prescription.getPatientAge()); page.setEditable(false);
         
         Text pcontactlabel = new Text("Contact No. "); pcontactlabel.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 14));
         TextField pcontact = new TextField(); pcontact.setPromptText("0152xxxxxxx");
@@ -402,9 +402,11 @@ public class MainPanel extends Application {
         Text psexlabel = new Text("Sex: "); psexlabel.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 14));
         ToggleGroup sex= new ToggleGroup();
                 
-        RadioButton male = new RadioButton("Male"); male.setToggleGroup(sex); male.setSelected(true);
+        RadioButton male = new RadioButton("Male"); male.setToggleGroup(sex); 
         RadioButton female= new RadioButton("Female"); female.setToggleGroup(sex);
         HBox sexGroup = new HBox(male,female); sexGroup.setSpacing(5);
+        if(prescription.getPatientSex().startsWith("m"))male.setSelected(true);
+        else female.setSelected(true);
         
         GridPane patient = new GridPane(); patient.setHgap(5); patient.setVgap(5);
         patient.add(pnamelabel, 0, 0); patient.add(pname, 1, 0);
@@ -424,7 +426,28 @@ public class MainPanel extends Application {
         GridPane medec = new GridPane(); medec.setHgap(5); medec.setVgap(0);
         center.getChildren().addAll(tests,medec); center.setSpacing(10);
         
+        ArrayList<Medicine> medList = prescription.getAllMedicine();
+        ArrayList<Test> testList = prescription.getAllTest();
         
+        testRow = medRow = 0;
+        Text mText = new Text(); mText.setText("Medicine(s)");
+        medec.addRow(medRow++, mText);
+        for(Medicine med : medList){
+            TextField name = new TextField(); name.setText(med.getName()); name.setEditable(false);
+            TextField type = new TextField(); type.setText(med.getType()); type.setEditable(false);
+            TextField does = new TextField(); does.setText(med.getTiming()); does.setEditable(false);
+            TextField time = new TextField(); time.setText(med.getDuration()); time.setEditable(false);
+            medec.addRow(medRow++, type, name, does, time);
+        }
+        Text tText = new Text(); tText.setText("Test(s)");
+        tests.addRow(testRow++, tText);
+        for(Test med : testList){
+            TextField name = new TextField(); name.setText(med.getName()); name.setEditable(false);
+            TextField type = new TextField(); type.setText(med.getType()); type.setEditable(false);
+            //TextField does = new TextField(); does.setText(med.getTiming()); does.setEditable(false);
+            //TextField time = new TextField(); time.setText(med.getDuration()); time.setEditable(false);
+            tests.addRow(testRow++, type, name);
+        }
         
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
